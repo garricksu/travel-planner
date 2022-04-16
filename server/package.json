@@ -1,0 +1,41 @@
+{
+  "name": "travel_planner_server",
+  "version": "1.0.0",
+  "description": "Backend for travel planner",
+  "main": "index.js",
+  "author": "Garrick Su",
+  "license": "MIT",
+  "dependencies": {
+    "apollo-server-express": "3.6.7",
+    "argon2": "0.28.5",
+    "class-validator": "0.13.2",
+    "connect-redis": "6.1.3",
+    "cors": "2.8.5",
+    "express": "4.17.3",
+    "express-session": "1.17.2",
+    "graphql": "15.3.0",
+    "ioredis": "5.0.3",
+    "pg": "8.7.3",
+    "redis": "4.0.6",
+    "reflect-metadata": "0.1.13",
+    "type-graphql": "1.1.1",
+    "typeorm": "0.3.5"
+  },
+  "devDependencies": {
+    "@types/argon2": "^0.15.0",
+    "@types/connect-redis": "0.0.18",
+    "@types/cors": "2.8.12",
+    "@types/express-session": "1.17.4",
+    "@types/graphql": "14.5.0",
+    "@types/ioredis": "4.28.10",
+    "@types/node": "17.0.23",
+    "@types/redis": "4.0.11",
+    "nodemon": "2.0.15",
+    "ts-node": "10.7.0",
+    "typescript": "4.6.3"
+  },
+  "scripts": {
+    "dev": "nodemon dist/index.js",
+    "build": "tsc -w"
+  }
+}
