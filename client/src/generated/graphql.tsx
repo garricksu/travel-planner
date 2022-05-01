@@ -17,6 +17,12 @@ export type Scalars = {
   DateTime: any;
 };
 
+export type FieldError = {
+  __typename?: 'FieldError';
+  field: Scalars['String'];
+  message: Scalars['String'];
+};
+
 export type LoginUserInput = {
   password: Scalars['String'];
   usernameOrEmail: Scalars['String'];
@@ -24,8 +30,8 @@ export type LoginUserInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  login?: Maybe<User>;
-  register: User;
+  login?: Maybe<UserResponse>;
+  register: UserResponse;
 };
 
 
@@ -62,21 +68,43 @@ export type User = {
   username: Scalars['String'];
 };
 
+export type UserProfile = {
+  __typename?: 'UserProfile';
+  email: Scalars['String'];
+  firstName: Scalars['String'];
+  id: Scalars['Float'];
+  lastName: Scalars['String'];
+  username: Scalars['String'];
+};
+
+export type UserResponse = {
+  __typename?: 'UserResponse';
+  errors?: Maybe<Array<FieldError>>;
+  user?: Maybe<UserProfile>;
+};
+
 export type RegisterUserMutationVariables = Exact<{
   input: NewUserInput;
 }>;
 
 
-export type RegisterUserMutation = { __typename?: 'Mutation', register: { __typename?: 'User', username: string, firstName: string, lastName: string, email: string } };
+export type RegisterUserMutation = { __typename?: 'Mutation', register: { __typename?: 'UserResponse', user?: { __typename?: 'UserProfile', id: number, username: string, firstName: string, lastName: string, email: string } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 
 export const RegisterUserDocument = gql`
     mutation RegisterUser($input: NewUserInput!) {
   register(input: $input) {
-    username
-    firstName
-    lastName
-    email
+    user {
+      id
+      username
+      firstName
+      lastName
+      email
+    }
+    errors {
+      field
+      message
+    }
   }
 }
     `;

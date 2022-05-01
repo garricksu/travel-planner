@@ -18,17 +18,11 @@ export const UserFormInput: React.FC<UserFormInputProps> = ({
   const [field, meta] = useField(props)
   return (
     <Col>
-      <Row>
-        <Col>
-          <FormLabel htmlFor={props.name}>{label}</FormLabel>
-        </Col>
-        <Col>
-          {meta.touched && meta.error ? (
-            <div className='text-danger text-end'>{meta.error}</div>
-          ) : null}
-        </Col>
-      </Row>
-      <FormControl {...field} {...props} name='firstName' type='text' />
+      <FormLabel htmlFor={props.name}>{label}</FormLabel>
+      <FormControl {...field} {...props} name={props.name} type={props.type} />
+      {meta.touched && meta.error ? (
+        <div className='text-danger text-end'>{meta.error}</div>
+      ) : null}
     </Col>
   )
 }

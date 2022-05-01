@@ -1,8 +1,15 @@
 mutation RegisterUser($input: NewUserInput!) {
   register(input: $input) {
-    username
-    firstName
-    lastName
-    email
+    user {
+      id
+      username
+      firstName
+      lastName
+      email
+    }
+    errors {
+      field
+      message
+    }
   }
 }

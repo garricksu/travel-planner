@@ -2,6 +2,7 @@ import { Formik, useField } from 'formik'
 import { Button, Col, Container, Form, FormGroup, Row } from 'react-bootstrap'
 import * as Yup from 'yup'
 import { useRegisterUserMutation } from '../generated/graphql'
+import { mapErrors } from '../utils/mapErrors'
 import { UserFormInput } from '../utils/UserFormInput'
 
 export const Register = () => {
@@ -26,11 +27,14 @@ export const Register = () => {
           username: Yup.string().required('Required'),
           password: Yup.string().required('Required'),
         })}
-        onSubmit={async (values) => {
+        onSubmit={async (values, { setErrors }) => {
           console.log(values)
-          const result = await register({
+          const response = await register({
             variables: { input: values },
           })
+          if (response.data?.register.errors) {
+            setErrors(mapErrors(response.data?.register.errors))
+          }
         }}
       >
         {(formik) => (
@@ -41,10 +45,10 @@ export const Register = () => {
               <UserFormInput label='Last name' name='lastName' type='text' />
             </Row>
             <Row className='mb-3'>
-              <UserFormInput label='Username' name='username' type='text' />
+              <UserFormInput label='Email' name='email' type='text' />
             </Row>
             <Row className='mb-3'>
-              <UserFormInput label='Email' name='email' type='text' />
+              <UserFormInput label='Username' name='username' type='text' />
             </Row>
             <Row className='mb-3'>
               <UserFormInput label='Password' name='password' type='password' />
