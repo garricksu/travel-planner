@@ -10,6 +10,7 @@ import { COOKIE_NAME, __prod__ } from './constants'
 import { dataSource } from './dataSource'
 import { UserResolver } from './resolvers/user'
 
+
 const main = async () => {
   const app = express()
 

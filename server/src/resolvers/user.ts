@@ -1,12 +1,9 @@
 import * as argon2 from 'argon2'
-import { Arg, Mutation, Query, Resolver } from 'type-graphql'
+import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql'
 import { dataSource } from '../dataSource'
-import {
-  LoginUserInput,
-  NewUserInput,
-  UserResponse,
-} from '../entities/types/userTypes'
+import { LoginUserInput, NewUserInput, UserResponse } from '../types/userTypes'
 import { User } from '../entities/User'
+import { MyContext } from 'src/types/types'
 
 @Resolver(User)
 export class UserResolver {
@@ -20,7 +17,8 @@ export class UserResolver {
   // register user
   @Mutation(() => UserResponse)
   async register(
-    @Arg('input') newUserData: NewUserInput
+    @Arg('input') newUserData: NewUserInput,
+    @Ctx() { req }: MyContext
   ): Promise<UserResponse> {
     const { firstName, lastName, email, username, password } = newUserData
     const hashedPassword = await argon2.hash(password)
@@ -48,8 +46,7 @@ export class UserResolver {
             },
           ],
         }
-      }
-      else if (err.code === '23505' && err.detail.includes('(username)')) {
+      } else if (err.code === '23505' && err.detail.includes('(username)')) {
         return {
           errors: [
             {
@@ -58,36 +55,55 @@ export class UserResolver {
             },
           ],
         }
-      }
-      else {
+      } else {
         return {
           errors: [
             {
               field: 'server',
-              message: 'Internal server error. Please try again.'
-            }
-          ]
+              message: 'Internal server error. Please try again.',
+            },
+          ],
         }
       }
     }
-
+    req.session.userId = user.id
     return { user }
   }
 
   // login user
-  @Mutation(() => UserResponse, { nullable: true })
-  async login(@Arg('input') loginUserdata: LoginUserInput) {
+  @Mutation(() => UserResponse)
+  async login(
+    @Arg('input') loginUserdata: LoginUserInput,
+    @Ctx() { req }: MyContext
+  ): Promise<UserResponse> {
     const { usernameOrEmail, password } = loginUserdata
-
-    const user = await User.findOne(
-      usernameOrEmail.includes('@')
-        ? { where: { email: usernameOrEmail } }
-        : { where: { username: usernameOrEmail } }
-    )
-
-    if (user && (await argon2.verify(user.password, password))) {
-      return user
+    try {
+      const user = await User.findOne(
+        usernameOrEmail.includes('@')
+          ? { where: { email: usernameOrEmail } }
+          : { where: { username: usernameOrEmail } }
+      )
+      if (user && (await argon2.verify(user.password, password))) {
+        req.session.userId = user.id
+        return { user }
+      } else
+        return {
+          errors: [
+            {
+              field: 'password',
+              message: 'Invalid login or password. Please try again.',
+            },
+          ],
+        }
+    } catch (err) {
+      return {
+        errors: [
+          {
+            field: 'server',
+            message: 'Internal server error. Please try again.',
+          },
+        ],
+      }
     }
-    return null
   }
 }

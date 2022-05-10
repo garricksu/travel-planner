@@ -1,5 +1,5 @@
-import { Formik, useField } from 'formik'
-import { Button, Col, Container, Form, FormGroup, Row } from 'react-bootstrap'
+import { Formik } from 'formik'
+import { Button, Col, Container, Form, Row } from 'react-bootstrap'
 import * as Yup from 'yup'
 import { useRegisterUserMutation } from '../generated/graphql'
 import { mapErrors } from '../utils/mapErrors'

@@ -30,7 +30,7 @@ export type LoginUserInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  login?: Maybe<UserResponse>;
+  login: UserResponse;
   register: UserResponse;
 };
 
@@ -83,6 +83,13 @@ export type UserResponse = {
   user?: Maybe<UserProfile>;
 };
 
+export type LoginUserMutationVariables = Exact<{
+  input: LoginUserInput;
+}>;
+
+
+export type LoginUserMutation = { __typename?: 'Mutation', login: { __typename?: 'UserResponse', user?: { __typename?: 'UserProfile', id: number, username: string, firstName: string, lastName: string, email: string } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+
 export type RegisterUserMutationVariables = Exact<{
   input: NewUserInput;
 }>;
@@ -91,6 +98,49 @@ export type RegisterUserMutationVariables = Exact<{
 export type RegisterUserMutation = { __typename?: 'Mutation', register: { __typename?: 'UserResponse', user?: { __typename?: 'UserProfile', id: number, username: string, firstName: string, lastName: string, email: string } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 
+export const LoginUserDocument = gql`
+    mutation LoginUser($input: LoginUserInput!) {
+  login(input: $input) {
+    user {
+      id
+      username
+      firstName
+      lastName
+      email
+    }
+    errors {
+      field
+      message
+    }
+  }
+}
+    `;
+export type LoginUserMutationFn = Apollo.MutationFunction<LoginUserMutation, LoginUserMutationVariables>;
+
+/**
+ * __useLoginUserMutation__
+ *
+ * To run a mutation, you first call `useLoginUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLoginUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [loginUserMutation, { data, loading, error }] = useLoginUserMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useLoginUserMutation(baseOptions?: Apollo.MutationHookOptions<LoginUserMutation, LoginUserMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<LoginUserMutation, LoginUserMutationVariables>(LoginUserDocument, options);
+      }
+export type LoginUserMutationHookResult = ReturnType<typeof useLoginUserMutation>;
+export type LoginUserMutationResult = Apollo.MutationResult<LoginUserMutation>;
+export type LoginUserMutationOptions = Apollo.BaseMutationOptions<LoginUserMutation, LoginUserMutationVariables>;
 export const RegisterUserDocument = gql`
     mutation RegisterUser($input: NewUserInput!) {
   register(input: $input) {

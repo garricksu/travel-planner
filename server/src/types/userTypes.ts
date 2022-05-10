@@ -1,5 +1,5 @@
 import { Field, InputType, ObjectType } from 'type-graphql'
-import { User } from '../User'
+import { User } from '../entities/User'
 
 @InputType()
 export class NewUserInput implements Partial<User> {
@@ -55,13 +55,11 @@ export class FieldError {
   message: string
 }
 
-
-
 @ObjectType()
 export class UserResponse {
-  @Field(() => UserProfile, {nullable: true}) 
+  @Field(() => UserProfile, { nullable: true })
   user?: UserProfile
 
-  @Field(() => [FieldError], {nullable: true})
+  @Field(() => [FieldError], { nullable: true })
   errors?: FieldError[]
 }
